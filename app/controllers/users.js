@@ -3,11 +3,16 @@ const db = [{ name: "JinShuo" }];
 class UsersCtl {
     searchAll(ctx) {
         ctx.body = db;
+        ctx.throw(412);
     }
     searchById(ctx) {
         ctx.body = db[ctx.params.id * 1];
     }
     create(ctx) {
+        ctx.verifyParams({
+            name: { type: "string", required: true },
+            age: { type: "number", required: false },
+        });
         db.push(ctx.request.body);
         ctx.body = ctx.request.body;
     }
