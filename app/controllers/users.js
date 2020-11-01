@@ -1,29 +1,40 @@
-const db = [{ name: "JinShuo" }];
+const User = require("../models/users");
 
-class UsersCtl {
-    searchAll(ctx) {
-        ctx.body = db;
-        ctx.throw(412);
+class UserController {
+    async searchAll(ctx) {
+        ctx.body = await User.find();
     }
-    searchById(ctx) {
-        ctx.body = db[ctx.params.id * 1];
+    async searchById(ctx) {
+        const user = await User.findById(ctx.params.id);
+        if (!user) {
+            ctx.throw(404, "用户不存在");
+        }
+        ctx.body = user;
     }
-    create(ctx) {
+    async create(ctx) {
         ctx.verifyParams({
             name: { type: "string", required: true },
-            age: { type: "number", required: false },
         });
-        db.push(ctx.request.body);
-        ctx.body = ctx.request.body;
+        const user = await new User(ctx.request.body).save();
+        ctx.body = user;
     }
-    update(ctx) {
-        db[ctx.params.id * 1] = ctx.request.body;
-        ctx.body = ctx.request.body;
+    async update(ctx) {
+        ctx.verifyParams({
+            name: { type: "string", required: true },
+        });
+        const user = await User.findByIdAndUpdate(ctx.params.id, ctx.request.body);
+        if (!user) {
+            ctx.throw(404, "用户不存在");
+        }
+        ctx.body = user;
     }
-    del(ctx) {
-        db.splice(ctx.params.id * 1, 1);
+    async del(ctx) {
+        const user = await User.findByIdAndDelete(ctx.params.id);
+        if (!user) {
+            ctx.throw(404, "用户不存在");
+        }
         ctx.status = 204;
     }
 }
 
-module.exports = new UsersCtl();
+module.exports = new UserController();
