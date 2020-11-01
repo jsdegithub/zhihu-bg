@@ -7,7 +7,7 @@ const db = [{ name: "JinShuo" }];
 router.get("/", searchAll);
 router.post("/", create);
 router.get("/:id", searchById);
-router.put("/:id", update);
+router.patch("/:id", update);
 router.delete("/:id", del);
 
 module.exports = router;
