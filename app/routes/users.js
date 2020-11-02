@@ -1,14 +1,34 @@
+const jsonwebtoken = require("jsonwebtoken");
 const Router = require("koa-router");
 const router = new Router({ prefix: "/users" });
-const { searchAll, create, searchById, update, del, login } = require("../controllers/users");
+const {
+    searchAll,
+    create,
+    searchById,
+    update,
+    del,
+    login,
+    checkOwner,
+} = require("../controllers/users");
 
-const db = [{ name: "JinShuo" }];
+const { secret } = require("../config");
+const auth = async (ctx, next) => {
+    const { authorization = "" } = ctx.request.header;
+    const token = authorization.replace("Bearer ", "");
+    try {
+        const user = jsonwebtoken.verify(token, secret);
+        ctx.state.user = user;
+    } catch (error) {
+        ctx.throw(401, error.message);
+    }
+    await next();
+};
 
 router.get("/", searchAll);
 router.post("/", create);
 router.get("/:id", searchById);
-router.patch("/:id", update);
-router.delete("/:id", del);
+router.patch("/:id", auth, checkOwner, update);
+router.delete("/:id", auth, checkOwner, del);
 router.post("/login", login);
 
 module.exports = router;
