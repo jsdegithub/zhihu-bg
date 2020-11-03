@@ -8,6 +8,12 @@ class HomeController {
         await User.remove();
         ctx.status = 204;
     }
+    upload(ctx) {
+        const file = ctx.request.files.file;
+        ctx.body = {
+            path: file.path,
+        };
+    }
 }
 
 module.exports = new HomeController();

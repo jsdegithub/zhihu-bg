@@ -1,10 +1,11 @@
 const Koa = require("koa");
-const bodyparser = require("koa-bodyparser");
+const koaBody = require("koa-body");
 const router = require("./routes/index.js");
 const error = require("koa-json-error");
 const parameter = require("koa-parameter");
 const mongoose = require("mongoose");
 const { connectionStr } = require("./config");
+const path = require("path");
 
 mongoose.connect(connectionStr, { useNewUrlParser: true }, (_) => {
     console.log("mongodb连接成功");
@@ -29,7 +30,15 @@ app.use(
             process.env.NODE_ENV === "production" ? rest : { stack, ...rest },
     })
 );
-app.use(bodyparser()); //这句必须放在app.use(usersRouter.routes());之前
+app.use(
+    koaBody({
+        multipart: true,
+        formidable: {
+            uploadDir: path.join(__dirname, "/public/upload"),
+            keepExtensions: true,
+        },
+    })
+);
 app.use(parameter(app));
 router(app);
 
