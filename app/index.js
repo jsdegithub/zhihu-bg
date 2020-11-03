@@ -1,5 +1,6 @@
 const Koa = require("koa");
 const koaBody = require("koa-body");
+const koaStatic = require("koa-static");
 const router = require("./routes/index.js");
 const error = require("koa-json-error");
 const parameter = require("koa-parameter");
@@ -24,6 +25,7 @@ app.use(async (ctx, next) => {
         };
     }
 });
+app.use(koaStatic(path.join(__dirname, "public")));
 app.use(
     error({
         postFormat: (e, { stack, ...rest }) =>

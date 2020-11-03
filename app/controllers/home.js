@@ -1,4 +1,5 @@
 const User = require("../models/users");
+const path = require("path");
 
 class HomeController {
     index(ctx) {
@@ -10,8 +11,9 @@ class HomeController {
     }
     upload(ctx) {
         const file = ctx.request.files.file;
+        const basename = path.basename(file.path);
         ctx.body = {
-            path: file.path,
+            url: `${ctx.origin}/upload/${basename}`,
         };
     }
 }
