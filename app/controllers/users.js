@@ -107,6 +107,13 @@ class UserController {
         }
         ctx.status = 204;
     }
+    async checkUserExist(ctx, next) {
+        const user = await User.findById(ctx.params.id);
+        if (!user) {
+            ctx.throw(404, "该用户不存在");
+        }
+        await next();
+    }
 }
 
 module.exports = new UserController();
