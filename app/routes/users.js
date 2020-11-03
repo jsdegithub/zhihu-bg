@@ -9,6 +9,8 @@ const {
     del,
     login,
     checkOwner,
+    listFollowing,
+    follow,
 } = require("../controllers/users");
 
 const { secret } = require("../config");
@@ -25,12 +27,14 @@ const { secret } = require("../config");
 }; */
 const auth = jwt({ secret });
 
-
 router.get("/", searchAll);
 router.post("/", create);
 router.get("/:id", searchById);
 router.patch("/:id", auth, checkOwner, update);
 router.delete("/:id", auth, checkOwner, del);
 router.post("/login", login);
+router.get("/:id/following", listFollowing);
+router.put("/following/:id", auth, follow);
+
 
 module.exports = router;
