@@ -16,12 +16,28 @@ class UserController {
         const selectFields = fields
             ? fields
                   .split(";")
+                  .filter((item) => item)
                   .map((item) => {
                       return " +" + item;
                   })
                   .join("")
             : "";
-        const user = await User.findById(ctx.params.id).select(selectFields);
+        const populateStr = fields
+            ? fields
+                  .split(";")
+                  .filter((item) => item)
+                  .map((item) => {
+                      if (item === "employments") {
+                          return "employments.company employments.job";
+                      }
+                      if (item === "educations") {
+                          return "educations.school educations.major";
+                      }
+                      return item;
+                  })
+                  .join(" ")
+            : "";
+        const user = await User.findById(ctx.params.id).select(selectFields).populate(populateStr);
         if (!user) {
             ctx.throw(404, "用户不存在");
         }
