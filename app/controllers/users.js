@@ -7,7 +7,7 @@ class UserController {
         const page = Math.max((ctx.query.page || 1) * 1, 1);
         const { page_size = 5 } = ctx.query;
         const pageSize = Math.max(page_size * 1, 1);
-        ctx.body = await User.find()
+        ctx.body = await User.find({ name: new RegExp(ctx.query.q) })
             .limit(pageSize)
             .skip((page - 1) * pageSize);
     }
