@@ -10,10 +10,11 @@ class CommentController {
             content: q,
             questionId: ctx.params.questionId,
             answerId: ctx.params.answerId,
+            rootCommentId: ctx.query.rootCommentId,
         })
             .limit(pageSize)
             .skip((page - 1) * pageSize)
-            .populate("commentator");
+            .populate("commentator replyTo");
     }
     async searchById(ctx) {
         const { fields } = ctx.query;
@@ -37,6 +38,8 @@ class CommentController {
     async create(ctx) {
         ctx.verifyParams({
             content: { type: "string", required: true },
+            rootCommentId: { type: "string", required: false },
+            replyTo: { type: "string", required: false },
         });
         const { content } = ctx.request.body;
         const repeatedComment = await Comment.findOne({ content });
@@ -55,7 +58,8 @@ class CommentController {
         ctx.verifyParams({
             content: { type: "string", required: false },
         });
-        const comment = await ctx.state.comment.update(ctx.request.body);
+        const { content } = ctx.request.body;
+        const comment = await ctx.state.comment.update({ content });
         if (!comment) {
             ctx.throw(404, "评论不存在");
         }
