@@ -24,6 +24,9 @@ const {
     dislikeAnswer,
     undislikeAnswer,
     listDislikingAnswers,
+    collectAnswer,
+    uncollectAnswer,
+    listCollectingAnswers,
 } = require("../controllers/users");
 const { checkTopicExist } = require("../controllers/topics");
 const { checkAnswerExist } = require("../controllers/answers");
@@ -62,5 +65,8 @@ router.delete("/likingAnswers/:id", auth, checkAnswerExist, unLikeAnswer);
 router.get("/:id/dislikingAnswers", listDislikingAnswers);
 router.put("/dislikingAnswers/:id", auth, checkAnswerExist, dislikeAnswer, unLikeAnswer);
 router.delete("/dislikingAnswers/:id", auth, checkAnswerExist, undislikeAnswer);
+router.get("/:id/collectingAnswers", listCollectingAnswers);
+router.put("/collectingAnswers/:id", auth, checkAnswerExist, collectAnswer);
+router.delete("/collectingAnswers/:id", auth, checkAnswerExist, uncollectAnswer);
 
 module.exports = router;

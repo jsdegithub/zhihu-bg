@@ -93,6 +93,15 @@ const userSchema = new Schema({
         ],
         select: false,
     },
+    collectingAnswers: {
+        type: [
+            {
+                type: Schema.Types.ObjectId,
+                ref: "Answer",
+            },
+        ],
+        select: false,
+    },
 });
 
 module.exports = model("User", userSchema);
