@@ -100,10 +100,17 @@ class UserController {
         const token = jsonwebtoken.sign({ _id, name }, secret, { expiresIn: "1d" });
         ctx.body = { token };
     }
+    async checkUserExist(ctx, next) {
+        const user = await User.findById(ctx.params.id);
+        if (!user) {
+            ctx.throw(404, "该用户不存在");
+        }
+        await next();
+    }
     async listFollowing(ctx) {
         const user = await User.findById(ctx.params.id).select("+following").populate("following");
         if (!user) {
-            ctx.throw(404);
+            ctx.throw(404, '用户不存在');
         }
         ctx.body = user.following;
     }
@@ -128,12 +135,35 @@ class UserController {
         }
         ctx.status = 204;
     }
-    async checkUserExist(ctx, next) {
-        const user = await User.findById(ctx.params.id);
-        if (!user) {
-            ctx.throw(404, "该用户不存在");
+    async followTopic(ctx) {
+        const me = await User.findById(ctx.state.user._id).select("+followingTopics");
+        if (!me.followingTopics.map((id) => id.toString()).includes(ctx.params.id)) {
+            me.followingTopics.push(ctx.params.id);
+            me.save();
+        } else {
+            ctx.throw(208, "已经关注过该话题");
         }
-        await next();
+        ctx.status = 204;
+    }
+    async unfollowTopic(ctx) {
+        const me = await User.findById(ctx.state.user._id).select("+followingTopics");
+        const index = me.followingTopics.map((id) => id.toString()).indexOf(ctx.params.id);
+        if (index > -1) {
+            me.followingTopics.splice(index, 1);
+            me.save();
+        } else {
+            ctx.throw(404, "尚未关注该话题");
+        }
+        ctx.status = 204;
+    }
+    async listFollowingTopics(ctx) {
+        const user = await User.findById(ctx.params.id)
+            .select("+followingTopics")
+            .populate("followingTopics");
+        if (!user) {
+            ctx.throw(404, '用户不存在');
+        }
+        ctx.body = user.followingTopics;
     }
 }
 
