@@ -21,6 +21,11 @@ const answerSchema = new Schema({
         required: true,
         select: false,
     },
+    voteCount: {
+        type: Number,
+        required: true,
+        default: 0,
+    },
 });
 
 module.exports = model("Answer", answerSchema);

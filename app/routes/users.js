@@ -18,8 +18,15 @@ const {
     unfollowTopic,
     listFollowingTopics,
     searchUserQuestion,
+    likeAnswer,
+    unLikeAnswer,
+    listLikingAnswers,
+    dislikeAnswer,
+    undislikeAnswer,
+    listDislikingAnswers,
 } = require("../controllers/users");
 const { checkTopicExist } = require("../controllers/topics");
+const { checkAnswerExist } = require("../controllers/answers");
 
 const { secret } = require("../config");
 /* const auth = async (ctx, next) => {
@@ -49,5 +56,11 @@ router.put("/followingTopics/:id", auth, checkTopicExist, followTopic);
 router.delete("/followingTopics/:id", auth, checkTopicExist, unfollowTopic);
 router.get("/:id/followingTopics", listFollowingTopics);
 router.get("/:id/questions", searchUserQuestion);
+router.get("/:id/likingAnswers", listLikingAnswers);
+router.put("/likingAnswers/:id", auth, checkAnswerExist, likeAnswer, undislikeAnswer);
+router.delete("/likingAnswers/:id", auth, checkAnswerExist, unLikeAnswer);
+router.get("/:id/dislikingAnswers", listDislikingAnswers);
+router.put("/dislikingAnswers/:id", auth, checkAnswerExist, dislikeAnswer, unLikeAnswer);
+router.delete("/dislikingAnswers/:id", auth, checkAnswerExist, undislikeAnswer);
 
 module.exports = router;

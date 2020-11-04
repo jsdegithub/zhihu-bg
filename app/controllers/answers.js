@@ -62,7 +62,7 @@ class AnswerController {
         if (!answer) {
             ctx.throw(404, "回答不存在");
         }
-        if (answer.questionId !== ctx.params.questionId) {
+        if (ctx.params.questionId && ctx.params.questionId !== answer.questionId) {
             ctx.throw(404, "这个回答不属于此提问");
         }
         ctx.state.answer = answer;
