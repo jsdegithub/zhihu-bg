@@ -9,6 +9,10 @@ class HomeController {
         await User.remove();
         ctx.status = 204;
     }
+    async delAllTopic(ctx) {
+        await Topic.remove();
+        ctx.status = 204;
+    }
     upload(ctx) {
         const file = ctx.request.files.file;
         const basename = path.basename(file.path);

@@ -4,7 +4,12 @@ const { secret } = require("../config");
 
 class UserController {
     async searchAll(ctx) {
-        ctx.body = await User.find();
+        const page = Math.max((ctx.query.page || 1) * 1, 1);
+        const { page_size = 5 } = ctx.query;
+        const pageSize = Math.max(page_size * 1, 1);
+        ctx.body = await User.find()
+            .limit(pageSize)
+            .skip((page - 1) * pageSize);
     }
     async searchById(ctx) {
         const { fields } = ctx.query;
