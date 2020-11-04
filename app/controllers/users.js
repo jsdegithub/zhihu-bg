@@ -1,5 +1,6 @@
 const jsonwebtoken = require("jsonwebtoken");
 const User = require("../models/users");
+const Question = require("../models/questions");
 const { secret } = require("../config");
 
 class UserController {
@@ -110,7 +111,7 @@ class UserController {
     async listFollowing(ctx) {
         const user = await User.findById(ctx.params.id).select("+following").populate("following");
         if (!user) {
-            ctx.throw(404, '用户不存在');
+            ctx.throw(404, "用户不存在");
         }
         ctx.body = user.following;
     }
@@ -161,9 +162,17 @@ class UserController {
             .select("+followingTopics")
             .populate("followingTopics");
         if (!user) {
-            ctx.throw(404, '用户不存在');
+            ctx.throw(404, "用户不存在");
         }
         ctx.body = user.followingTopics;
+    }
+    async searchUserQuestion(ctx) {
+        const page = Math.max((ctx.query.page || 1) * 1, 1);
+        const { page_size = 5 } = ctx.query;
+        const pageSize = Math.max(page_size * 1, 1);
+        ctx.body = await Question.find({ questioner: ctx.params.id })
+            .limit(pageSize)
+            .skip((page - 1) * pageSize);
     }
 }
 

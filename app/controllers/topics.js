@@ -1,5 +1,6 @@
 const Topic = require("../models/topics");
 const User = require("../models/users");
+const Question = require("../models/questions");
 
 class TopicController {
     async searchAll(ctx) {
@@ -62,6 +63,10 @@ class TopicController {
     async listTopicFollowers(ctx) {
         const followers = await User.find({ followingTopics: ctx.params.id });
         ctx.body = followers;
+    }
+    async listQuestions(ctx) {
+        const questions = await Question.find({ topics: ctx.params.id });
+        ctx.body = questions;
     }
 }
 
