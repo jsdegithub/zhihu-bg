@@ -1,9 +1,11 @@
 const User = require("../models/users");
 const path = require("path");
+const homePage = require("../page/index");
 
 class HomeController {
     index(ctx) {
-        ctx.body = "<h1>这是主页</h1>";
+        ctx.type = "text/html;charset=utf-8";
+        ctx.body = homePage;
     }
     async delAllUser(ctx) {
         await User.remove();
